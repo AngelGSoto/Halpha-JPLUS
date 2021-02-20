@@ -1,0 +1,168 @@
+* Find JPLUS emission line objects
+:PROPERTIES:
+:ID:       
+:END:
+
+** Motivation
+I want to know the population of H\alpha emitter in JPLUS DR2 and described what kind of objects they are.
+
+** Query for database
+
+The follow query allows to download objects form JPLUS with very good photometry in 6\arcsec aperture.  
+
+#+BEGIN_SRC sql: query
+SELECT * FROM jplus.MagABDualObj WHERE (MAG_APER_6_0[jplus::rSDSS] - MAG_APER_6_0[jplus::J0660]) >= 0.25*(MAG_APER_6_0[jplus::rSDSS] - MAG_APER_6_0[jplus::iSDSS]) - 0.28 
+AND MAG_APER_6_0[jplus::rSDSS] < 20.0 AND MAG_ERR_APER_6_0[jplus::rSDSS] <= 0.2 AND MAG_ERR_APER_6_0[jplus::gSDSS] <= 0.2 AND MAG_ERR_APER_6_0[jplus::iSDSS] <= 0.2 
+AND MAG_ERR_APER_6_0[jplus::zSDSS] <= 0.2 AND MAG_ERR_APER_6_0[jplus::uJAVA] <= 0.2 AND MAG_ERR_APER_6_0[jplus::J0378] <= 0.2 AND MAG_ERR_APER_6_0[jplus::J0395] <= 0.2 
+AND MAG_ERR_APER_6_0[jplus::J0410] <= 0.2 AND MAG_ERR_APER_6_0[jplus::J0430] <= 0.2 AND MAG_ERR_APER_6_0[jplus::J0515] <= 0.2 AND MAG_ERR_APER_6_0[jplus::J0660] <= 0.2 
+AND MAG_ERR_APER_6_0[jplus::J0861] <= 0.2 AND FLAGS[jplus::rSDSS] <= 3.0 AND FLAGS[jplus::gSDSS] <= 3.0 AND FLAGS[jplus::iSDSS] <= 3.0 AND FLAGS[jplus::zSDSS] <= 3.0 
+AND FLAGS[jplus::uJAVA] <= 3.0 AND FLAGS[jplus::J0378] <= 3.0 AND FLAGS[jplus::J0395] <= 3.0 AND FLAGS[jplus::J0410] <= 3.0 AND FLAGS[jplus::J0430] <= 3.0 
+AND FLAGS[jplus::J0515] <= 3.0 AND FLAGS[jplus::J0660] <= 3.0 AND FLAGS[jplus::J0861] <= 3.0 AND MASK_FLAGS[jplus::rSDSS] = 0.0 AND MASK_FLAGS[jplus::gSDSS] = 0.0 
+AND MASK_FLAGS[jplus::iSDSS] = 0.0 AND MASK_FLAGS[jplus::zSDSS] = 0.0 AND MASK_FLAGS[jplus::uJAVA] = 0.0 AND MASK_FLAGS[jplus::J0378] = 0.0 AND MASK_FLAGS[jplus::J0395] = 0.0 
+AND MASK_FLAGS[jplus::J0410] = 0.0 AND MASK_FLAGS[jplus::J0430] = 0.0 AND MASK_FLAGS[jplus::J0515] = 0.0 AND MASK_FLAGS[jplus::J0660] = 0.0 AND MASK_FLAGS[jplus::J0861] = 0.0
+#+END_SRC
+
+* Using HDBSCAN
+
+ Tests: min_samples=20 -> - min_cluster_size=20: 
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 254566
+                            Estimated number of noise points: 4858
+
+                          - min_cluster_size=40: 
+                            Estimated number of clusters: 4
+                            Estimated number of cluster points: 40
+                            Estimated number of noise points: 71937
+
+                          - min_cluster_size=60
+                            Estimated number of clusters: 3
+                            Estimated number of cluster points: 73
+                            Estimated number of noise points: 71977
+
+                          - min_cluster_size=80
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 154
+                            Estimated number of noise points: 20813
+
+                          - min_cluster_size=100
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 154
+                            Estimated number of noise points: 20813
+ 
+                          - min_cluster_size=120
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 154
+                            Estimated number of noise points: 20813
+
+min_samples=30 -> - min_cluster_size=20: 
+                           - Estimated number of clusters: 4
+                             Estimated number of cluster points: 55
+                             Estimated number of noise points: 53368
+
+                           - min_cluster_size=40: 
+                             Estimated number of clusters: 2
+                             Estimated number of cluster points: 238110
+                             Estimated number of noise points: 21296
+
+                           - min_cluster_size=60
+                             Estimated number of clusters: 3
+                             Estimated number of cluster points: 61519
+                             Estimated number of noise points: 197809
+
+                           - min_cluster_size=80
+                             Estimated number of clusters: 3
+                             Estimated number of cluster points: 248
+                             Estimated number of noise points: 229559
+
+                           - min_cluster_size=100
+                             Estimated number of clusters: 3
+                             Estimated number of cluster points: 248
+                             Estimated number of noise points: 229559
+                           
+                          
+min_samples=40 -> - min_cluster_size=20: 
+                            Estimated number of clusters: 3
+                            Estimated number of cluster points: 239603
+                            Estimated number of noise points: 19768
+
+                          - min_cluster_size=40: 
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 62
+                            Estimated number of noise points: 19796
+
+                          - min_cluster_size=60
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 62
+                            Estimated number of noise points: 19796
+
+                          - min_cluster_size=80
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 30702
+                            Estimated number of noise points: 228611
+
+                          - min_cluster_size=100
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 30702
+                            Estimated number of noise points: 228611
+
+min_samples=50 -> - min_cluster_size=20: 
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 239263
+                            Estimated number of noise points: 20151
+
+                          - min_cluster_size=40: 
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 239263
+                            Estimated number of noise points: 20151
+
+                          - min_cluster_size=60
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 33139
+                            Estimated number of noise points: 226249
+
+
+                          - min_cluster_size=80
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 17578
+                            Estimated number of noise points: 241777
+
+                          - min_cluster_size=100
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 17578
+                            Estimated number of noise points: 241777
+                          
+
+min_samples=60 -> - min_cluster_size=20: 
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 238802
+                            Estimated number of noise points: 20615
+
+
+                          - min_cluster_size=40: 
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 238802
+                            Estimated number of noise points: 20615
+
+                          - min_cluster_size=60
+                            Estimated number of clusters: 3
+                            Estimated number of cluster points: 40489
+                            Estimated number of noise points: 218765
+
+                          - min_cluster_size=80
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 130
+                            Estimated number of noise points: 218842
+
+                          - min_cluster_size=100
+                            Estimated number of clusters: 2
+                            Estimated number of cluster points: 130
+                            Estimated number of noise points: 218842
+
+
+
+Probing this configuration: min_samples=60, min_cluster_size=30
+Estimated number of clusters: 2
+Estimated number of cluster points: 238802
+Estimated number of noise points: 20615
+
++ Seems that with  min_samples=20, min_cluster_size=80 parameters got good results.
