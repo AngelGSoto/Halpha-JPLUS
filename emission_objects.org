@@ -166,3 +166,11 @@ Estimated number of cluster points: 238802
 Estimated number of noise points: 20615
 
 + Seems that with  min_samples=20, min_cluster_size=80 parameters got good results.
+
+*** First conclusions 
+
+I tried unsupervised machine learning to find the locus of Main sequence and Giant stars. 
++ I first try DBSCAN but no worked very well due to it falls with varying density. Many mini cluster were found and this dint make sense.
++ I tried OPTICS algorithm to find the MS and Giant locus. It works better than DBSCAN when we have data with varying density and don't need 
+  to introduce the \epsilon parameter. The problem is take long take executing.  
++ Finally I try we HDBSCAN works very well. I made several test to find the best parameters that allow to better clustering. Above son results. 
